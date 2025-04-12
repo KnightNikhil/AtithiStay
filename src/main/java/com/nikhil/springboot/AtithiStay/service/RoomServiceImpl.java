@@ -9,6 +9,7 @@ import com.nikhil.springboot.AtithiStay.repository.RoomRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,11 +25,19 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     HotelRepository hotelRepository;
 
+    @Autowired
+    InventoryService inventoryService;
+
     @Override
     public RoomDto createNewRoom(RoomDto roomDto, Long hotelId) {
         Room room = modelMapper.map(roomDto, Room.class);
-        room.setHotel(hotelRepository.findById(hotelId).orElse(null));
+        room.setHotel(hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("Hotel not found")));
         roomRepository.save(room);
+
+//        if(room.getHotel().getActive()){
+//            inventoryService.initilaizeRoomForAWeek(room);
+//        }
+
         return modelMapper.map(room, RoomDto.class);
     }
 
@@ -40,9 +49,11 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public Boolean deleteRoomById(Long id) {
         Room room= roomRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+id)) ;
+        inventoryService.deleteAllInventories(room);
         roomRepository.deleteById(id);
         return true;
     }

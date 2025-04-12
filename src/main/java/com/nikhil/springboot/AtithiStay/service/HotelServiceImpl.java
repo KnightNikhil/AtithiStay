@@ -2,8 +2,10 @@ package com.nikhil.springboot.AtithiStay.service;
 
 import com.nikhil.springboot.AtithiStay.dto.HotelDto;
 import com.nikhil.springboot.AtithiStay.entity.Hotel;
+import com.nikhil.springboot.AtithiStay.entity.Room;
 import com.nikhil.springboot.AtithiStay.exceptions.ResourceNotFoundException;
 import com.nikhil.springboot.AtithiStay.repository.HotelRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,16 @@ import org.springframework.stereotype.Service;
 public class HotelServiceImpl implements HotelService{
 
     @Autowired
-    private HotelRepository hotelRepository;
+    HotelRepository hotelRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    ModelMapper modelMapper;
+
+    @Autowired
+    RoomService roomService;
+
+    @Autowired
+    InventoryService inventoryService;
 
     @Override
     public HotelDto createNewHotel(HotelDto hotelDto) {
@@ -47,18 +55,32 @@ public class HotelServiceImpl implements HotelService{
     }
 
     @Override
+    @Transactional
     public Boolean deleteHotelById(Long id) {
         Hotel hotel= hotelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+id));
+
+        for(Room room :hotel.getRooms()){
+            inventoryService.deleteAllInventories(room);
+            roomService.deleteRoomById(room.getId());
+        }
         hotelRepository.deleteById(id);
+
+
         return true;
     }
 
     @Override
+    @Transactional
     public HotelDto activateHotelById(Long id) {
         Hotel hotel= hotelRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+id));
         hotel.setActive(true);
+
+//        for(Room room : hotel.getRooms()){
+//            inventoryService.initilaizeRoomForAWeek(room);
+//        }
+
         Hotel activatedHotel = hotelRepository.save(hotel);
         return modelMapper.map(activatedHotel, HotelDto.class);
     }
