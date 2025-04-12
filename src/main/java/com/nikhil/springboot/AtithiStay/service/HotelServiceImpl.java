@@ -66,6 +66,10 @@ public class HotelServiceImpl implements HotelService{
         }
         hotelRepository.deleteById(id);
 
+        // TODO
+        // when we delete hotel, we need to delete rooms associated with that hotel and the inventories associated with room and hotel
+        // all of this should bw in the manner that we need to remove dependency one by one
+        // here inventory had rooms and hotels so that need to be removed first and then rooms and then hotel
 
         return true;
     }
@@ -77,9 +81,9 @@ public class HotelServiceImpl implements HotelService{
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+id));
         hotel.setActive(true);
 
-//        for(Room room : hotel.getRooms()){
-//            inventoryService.initilaizeRoomForAWeek(room);
-//        }
+        for(Room room : hotel.getRooms()){
+            inventoryService.initilaizeRoomForAWeek(room);
+        }
 
         Hotel activatedHotel = hotelRepository.save(hotel);
         return modelMapper.map(activatedHotel, HotelDto.class);

@@ -34,9 +34,9 @@ public class RoomServiceImpl implements RoomService {
         room.setHotel(hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("Hotel not found")));
         roomRepository.save(room);
 
-//        if(room.getHotel().getActive()){
-//            inventoryService.initilaizeRoomForAWeek(room);
-//        }
+        if(room.getHotel().getActive()){
+            inventoryService.initilaizeRoomForAWeek(room);
+        }
 
         return modelMapper.map(room, RoomDto.class);
     }
