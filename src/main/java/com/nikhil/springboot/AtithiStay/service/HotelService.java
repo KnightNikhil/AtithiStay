@@ -1,6 +1,7 @@
 package com.nikhil.springboot.AtithiStay.service;
 
 import com.nikhil.springboot.AtithiStay.dto.HotelDto;
+import com.nikhil.springboot.AtithiStay.dto.HotelInfoDto;
 
 public interface HotelService {
 
@@ -11,4 +12,6 @@ public interface HotelService {
     HotelDto activateHotelById(Long id);
 
     HotelDto deActivateHotelById(Long id);
+
+    HotelInfoDto getHotelInfoById(Long hotelId);
 }

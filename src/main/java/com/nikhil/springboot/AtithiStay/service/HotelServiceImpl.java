@@ -1,6 +1,8 @@
 package com.nikhil.springboot.AtithiStay.service;
 
 import com.nikhil.springboot.AtithiStay.dto.HotelDto;
+import com.nikhil.springboot.AtithiStay.dto.HotelInfoDto;
+import com.nikhil.springboot.AtithiStay.dto.RoomDto;
 import com.nikhil.springboot.AtithiStay.entity.Hotel;
 import com.nikhil.springboot.AtithiStay.entity.Room;
 import com.nikhil.springboot.AtithiStay.exceptions.ResourceNotFoundException;
@@ -96,5 +98,12 @@ public class HotelServiceImpl implements HotelService{
         hotel.setActive(false);
         Hotel activatedHotel = hotelRepository.save(hotel);
         return modelMapper.map(activatedHotel, HotelDto.class);
+    }
+
+    @Override
+    public HotelInfoDto getHotelInfoById(Long hotelId) {
+        Hotel hotel= hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+hotelId)) ;
+        return new HotelInfoDto(modelMapper.map(hotel, HotelDto.class),hotel.getRooms().stream().map(room -> modelMapper.map(room, RoomDto.class)).toList());
     }
 }
