@@ -43,10 +43,6 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDto initialiseBooking(BookingRequest bookingRequest) {
 
-        //hotel, room
-        // go to inventory, for each date,bookedCount increase
-        // sae booking in booking table
-
         Hotel hotel = hotelRepository.findById(bookingRequest.getHotelId())
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel with Hotel id " + bookingRequest.getHotelId() +"not found" ));
 
