@@ -2,6 +2,7 @@ package com.nikhil.springboot.AtithiStay.entity;
 
 import com.nikhil.springboot.AtithiStay.entity.enums.BookingStatus;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Builder
 public class Booking {
 
     @Id

@@ -47,6 +47,7 @@ public class InventoryServiceImpl implements InventoryService {
                     .surgeFactor(BigDecimal.ONE)
                     .date(today)
                     .room(room)
+                    .reservedCount(0)
                     .build();
             inventoryRepository.save(inventory);
         }

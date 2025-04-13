@@ -2,6 +2,7 @@ package com.nikhil.springboot.AtithiStay.entity;
 
 import com.nikhil.springboot.AtithiStay.entity.enums.Role;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name = "app_user")
 public class User {
 

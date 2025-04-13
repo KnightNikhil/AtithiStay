@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
+
     void deleteAllByRoom(Room room);
 
     @Query("""
@@ -29,4 +30,9 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
                                                  @Param("roomsCount") Integer roomsCount,
                                                  @Param("dateCount") Long dateCount); // TODO what is the significance of this?
 
+    Inventory findByHotelIdAndRoomIdAndDate(Long hotelId, Long roomId, LocalDate date);
+
+    List<Inventory> findByRoomIdAndDateBetween(Long roomId, LocalDate checkInDate, LocalDate checkOutDate);
+
+    List<Inventory> findAllByRoomIdAndDateBetweenAndClosed(Long roomId, LocalDate checkInDate, LocalDate checkOutDate, boolean b);
 }
