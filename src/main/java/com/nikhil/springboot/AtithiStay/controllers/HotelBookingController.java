@@ -25,11 +25,6 @@ public class HotelBookingController {
         return new ResponseEntity<>(bookingDto, HttpStatus.OK);
     }
 
-    @PostMapping("/addGuest")
-    public ResponseEntity<BookingDto> addGuests(@RequestBody GuestDto guestDto){
-        BookingDto bookingDto = bookingService.addGuests(guestDto);
-        return new ResponseEntity<>(bookingDto, HttpStatus.OK);
-    }
 
 
 }

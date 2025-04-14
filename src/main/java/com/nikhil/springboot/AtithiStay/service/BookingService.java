@@ -6,5 +6,4 @@ import com.nikhil.springboot.AtithiStay.dto.GuestDto;
 
 public interface BookingService {
     public BookingDto initialiseBooking(BookingRequest bookingRequest);
-    public BookingDto addGuests(GuestDto guestDto);
 }

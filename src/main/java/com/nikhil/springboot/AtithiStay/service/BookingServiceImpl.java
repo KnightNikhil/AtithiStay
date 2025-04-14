@@ -2,7 +2,6 @@ package com.nikhil.springboot.AtithiStay.service;
 
 import com.nikhil.springboot.AtithiStay.dto.BookingDto;
 import com.nikhil.springboot.AtithiStay.dto.BookingRequest;
-import com.nikhil.springboot.AtithiStay.dto.GuestDto;
 import com.nikhil.springboot.AtithiStay.entity.*;
 import com.nikhil.springboot.AtithiStay.entity.enums.BookingStatus;
 import com.nikhil.springboot.AtithiStay.exceptions.ResourceNotFoundException;
@@ -13,10 +12,9 @@ import com.nikhil.springboot.AtithiStay.repository.RoomRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
+
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -91,8 +89,4 @@ public class BookingServiceImpl implements BookingService {
         return modelMapper.map(booking, BookingDto.class);
     }
 
-    @Override
-    public BookingDto addGuests(GuestDto guestDto) {
-        return null;
-    }
 }
