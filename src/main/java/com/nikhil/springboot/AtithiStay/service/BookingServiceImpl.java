@@ -5,14 +5,12 @@ import com.nikhil.springboot.AtithiStay.dto.BookingRequest;
 import com.nikhil.springboot.AtithiStay.entity.*;
 import com.nikhil.springboot.AtithiStay.entity.enums.BookingStatus;
 import com.nikhil.springboot.AtithiStay.exceptions.ResourceNotFoundException;
-import com.nikhil.springboot.AtithiStay.repository.BookingRepository;
-import com.nikhil.springboot.AtithiStay.repository.HotelRepository;
-import com.nikhil.springboot.AtithiStay.repository.InventoryRepository;
-import com.nikhil.springboot.AtithiStay.repository.RoomRepository;
+import com.nikhil.springboot.AtithiStay.repository.*;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
@@ -41,6 +39,8 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingDto initialiseBooking(BookingRequest bookingRequest) {
 
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         Hotel hotel = hotelRepository.findById(bookingRequest.getHotelId())
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel with Hotel id " + bookingRequest.getHotelId() +"not found" ));
 
@@ -58,21 +58,16 @@ public class BookingServiceImpl implements BookingService {
                 if( (inventory.getTotalCount() - inventory.getReservedCount() - inventory.getBookedCount() - bookingRequest.getRoomsCount())>=0){
                     inventory.setBookedCount(inventory.getBookedCount() + bookingRequest.getRoomsCount());
                 }
+                else{
+                    return cancelBooking(bookingRequest);
+                }
             }
             inventoryRepository.saveAll(inventories);
         }
         else{
-            return null;
+            return cancelBooking(bookingRequest);
         }
 
-
-
-        User user = User.builder()
-                .id(1L)
-                .email("nik@g.c")
-                .name("Nikhil")
-                .password("qwerty")
-                .build();
 
         Booking booking = Booking.builder()
                 .room(room)
@@ -86,7 +81,17 @@ public class BookingServiceImpl implements BookingService {
 
         bookingRepository.save(booking);
 
+
+
         return modelMapper.map(booking, BookingDto.class);
     }
+
+    private BookingDto cancelBooking(BookingRequest bookingRequest){
+        BookingDto bookingDto = modelMapper.map(bookingRequest, BookingDto.class);
+        bookingDto.setBookingStatus(BookingStatus.CANCELLED);
+        return bookingDto;
+    }
+
+
 
 }

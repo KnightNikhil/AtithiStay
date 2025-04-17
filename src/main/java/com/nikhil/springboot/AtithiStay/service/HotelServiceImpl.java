@@ -68,7 +68,7 @@ public class HotelServiceImpl implements HotelService{
         }
         hotelRepository.deleteById(id);
 
-        // TODO
+        // TODO::
         // when we delete hotel, we need to delete rooms associated with that hotel and the inventories associated with room and hotel
         // all of this should bw in the manner that we need to remove dependency one by one
         // here inventory had rooms and hotels so that need to be removed first and then rooms and then hotel
