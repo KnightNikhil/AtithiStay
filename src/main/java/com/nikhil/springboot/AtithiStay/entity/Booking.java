@@ -1,10 +1,9 @@
 package com.nikhil.springboot.AtithiStay.entity;
 
 import com.nikhil.springboot.AtithiStay.entity.enums.BookingStatus;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -16,6 +15,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Booking {
 
     @Id
@@ -49,20 +50,11 @@ public class Booking {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
+    @Column(unique = true)
+    private String paymentSessionId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BookingStatus bookingStatus;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "booking_guest",
-            joinColumns = @JoinColumn(name = "booking_id"),
-            inverseJoinColumns = @JoinColumn(name = "guest_id")
-    )
-    private Set<Guest> guests;
 
 }

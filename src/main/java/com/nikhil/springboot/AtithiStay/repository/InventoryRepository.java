@@ -35,4 +35,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
     List<Inventory> findByRoomIdAndDateBetween(Long roomId, LocalDate checkInDate, LocalDate checkOutDate);
 
     List<Inventory> findAllByRoomIdAndDateBetweenAndClosed(Long roomId, LocalDate checkInDate, LocalDate checkOutDate, boolean b);
+
+//    void confirmBooking(Long id, LocalDate checkInDate, LocalDate checkOutDate, Integer roomsCount);
 }

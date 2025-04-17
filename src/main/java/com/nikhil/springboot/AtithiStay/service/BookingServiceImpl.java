@@ -6,17 +6,23 @@ import com.nikhil.springboot.AtithiStay.entity.*;
 import com.nikhil.springboot.AtithiStay.entity.enums.BookingStatus;
 import com.nikhil.springboot.AtithiStay.exceptions.ResourceNotFoundException;
 import com.nikhil.springboot.AtithiStay.repository.*;
-import jakarta.transaction.Transactional;
+import com.stripe.model.Event;
+import com.stripe.model.EventDataObjectDeserializer;
+import com.stripe.model.checkout.Session;
+import com.stripe.net.ApiResource;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
+@Slf4j
 public class BookingServiceImpl implements BookingService {
 
     @Autowired
@@ -33,6 +39,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    CheckoutService checkoutService;
 
 
     @Override
@@ -76,14 +85,62 @@ public class BookingServiceImpl implements BookingService {
                 .roomsCount(bookingRequest.getRoomsCount())
                 .checkInDate(bookingRequest.getCheckInDate())
                 .checkOutDate(bookingRequest.getCheckOutDate())
-                .bookingStatus(BookingStatus.CONFIRMED)
+                .bookingStatus(BookingStatus.RESERVED)
                 .build();
 
         bookingRepository.save(booking);
 
-
-
         return modelMapper.map(booking, BookingDto.class);
+    }
+
+    @Override
+    public String initialisePayment(Long bookingId) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
+                new ResourceNotFoundException("Booking not found with id: "+bookingId));
+
+        String checkoutSessionUrl = checkoutService.getCheckoutSession(user, booking, "http://localhost:8080/success", "http://localhost:8080/failure");
+
+//        booking.setBookingStatus(BookingStatus.PAYMENT_PENDING);
+//        bookingRepository.save(booking);
+        return  checkoutSessionUrl;
+    }
+
+    @Override
+    @Transactional
+    public void capturePayment(Event event) {
+        if ("checkout.session.completed".equals(event.getType())) {
+//            Session session = (Session) event.getDataObjectDeserializer().getObject().orElse(null);
+
+            EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+
+            Session session;
+            if (deserializer.getObject().isPresent()) {
+                session = (Session) deserializer.getObject().get(); // deserializer not working
+            } else {
+                session = ApiResource.GSON.fromJson(event.getData().getObject().toJson(), Session.class);
+            }
+
+            if (session == null) return;
+
+            String sessionId = session.getId();
+            Booking booking =
+                    bookingRepository.findByPaymentSessionId(sessionId).orElseThrow(() ->
+                            new ResourceNotFoundException("Booking not found for session ID: "+sessionId));
+
+            booking.setBookingStatus(BookingStatus.CONFIRMED);
+            bookingRepository.save(booking);
+
+//            inventoryRepository.findAndLockReservedInventory(booking.getRoom().getId(), booking.getCheckInDate(),
+//                    booking.getCheckOutDate(), booking.getRoomsCount());
+
+//            inventoryRepository.confirmBooking(booking.getRoom().getId(), booking.getCheckInDate(),
+//                    booking.getCheckOutDate(), booking.getRoomsCount());
+
+        } else {
+            log.warn("Unhandled event type: {}", event.getType());
+        }
     }
 
     private BookingDto cancelBooking(BookingRequest bookingRequest){
