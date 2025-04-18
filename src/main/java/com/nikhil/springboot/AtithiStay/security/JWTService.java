@@ -22,11 +22,18 @@ public class JWTService {
     public String generateJWTToken(User user){
         return Jwts.builder()
                 .subject(user.getId().toString())
-                .claim("email",user.getEmail())
+                // TODO::
+                // id is provided as subject
+                // .subject(...) sets the identity the JWT is issued for
+                // Usually set to user ID, email, or username
+                // it is part of claim
+                .claim("email",user.getEmail()) // claim is the data
                 .claim("roles", user.getRoles().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis()+1000*60*60))
+                // expiration time for JWT token
                 .signWith(getSecretKey())
+                //this is the secret kry provided by us
                 .compact();
 
     }
@@ -34,6 +41,7 @@ public class JWTService {
     public Long getUserIdFromToken(String token){
         Claims claims = Jwts.parser()
                 .verifyWith(getSecretKey())
+                // secret key is verified if the token provided also has the same secret key
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

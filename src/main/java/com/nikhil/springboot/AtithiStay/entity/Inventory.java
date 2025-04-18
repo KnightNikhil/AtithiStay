@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
                 name = "unique_hotel_room_date",
                 columnNames = {"hotel_id", "room_id", "date"}
         ))
+// there has to be a unique combination for the above three parameters
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,10 +31,12 @@ public class Inventory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
+    //there could be many inventory rows with same hotelId
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "room_id", nullable = false)
     private Room room;
+    //there could be many inventory rows with same roomId
 
     @Column(nullable = false)
     private LocalDate date;

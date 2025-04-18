@@ -13,5 +13,5 @@ public interface HotelService {
 
     HotelDto deActivateHotelById(Long id);
 
-    HotelInfoDto getHotelInfoById(Long hotelId);
+    HotelDto getHotelInfoById(Long hotelId);
 }

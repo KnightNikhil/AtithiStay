@@ -65,7 +65,8 @@ public class BookingServiceImpl implements BookingService {
         if(inventories.size() == dateCount){
             for(Inventory inventory : inventories){
                 if( (inventory.getTotalCount() - inventory.getReservedCount() - inventory.getBookedCount() - bookingRequest.getRoomsCount())>=0){
-                    inventory.setBookedCount(inventory.getBookedCount() + bookingRequest.getRoomsCount());
+//                    inventory.setBookedCount(inventory.getReservedCount() + bookingRequest.getRoomsCount());
+                    inventory.setReservedCount(inventory.getReservedCount() + bookingRequest.getRoomsCount());
                 }
                 else{
                     return cancelBooking(bookingRequest);
@@ -102,8 +103,6 @@ public class BookingServiceImpl implements BookingService {
 
         String checkoutSessionUrl = checkoutService.getCheckoutSession(user, booking, "http://localhost:8080/success", "http://localhost:8080/failure");
 
-//        booking.setBookingStatus(BookingStatus.PAYMENT_PENDING);
-//        bookingRepository.save(booking);
         return  checkoutSessionUrl;
     }
 
@@ -111,15 +110,15 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public void capturePayment(Event event) {
         if ("checkout.session.completed".equals(event.getType())) {
-//            Session session = (Session) event.getDataObjectDeserializer().getObject().orElse(null);
-
             EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
 
             Session session;
+
             if (deserializer.getObject().isPresent()) {
                 session = (Session) deserializer.getObject().get(); // deserializer not working
             } else {
                 session = ApiResource.GSON.fromJson(event.getData().getObject().toJson(), Session.class);
+                // manually deserializing
             }
 
             if (session == null) return;
@@ -132,11 +131,11 @@ public class BookingServiceImpl implements BookingService {
             booking.setBookingStatus(BookingStatus.CONFIRMED);
             bookingRepository.save(booking);
 
-//            inventoryRepository.findAndLockReservedInventory(booking.getRoom().getId(), booking.getCheckInDate(),
-//                    booking.getCheckOutDate(), booking.getRoomsCount());
+            inventoryRepository.findAndLockReservedInventory(booking.getRoom().getId(), booking.getCheckInDate(),
+                    booking.getCheckOutDate(), booking.getRoomsCount());
 
-//            inventoryRepository.confirmBooking(booking.getRoom().getId(), booking.getCheckInDate(),
-//                    booking.getCheckOutDate(), booking.getRoomsCount());
+            inventoryRepository.confirmBooking(booking.getRoom().getId(), booking.getCheckInDate(),
+                    booking.getCheckOutDate(), booking.getRoomsCount());
 
         } else {
             log.warn("Unhandled event type: {}", event.getType());

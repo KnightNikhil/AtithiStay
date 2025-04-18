@@ -47,4 +47,7 @@ public class Hotel {
 
     @OneToMany(mappedBy = "hotel")
     private List<Room> rooms;
+    // one hotel can have more than one rooms
+    // hotelIdId can be same for more than one room in Room table
+    // for multiple roomIds there could be same hotelId
 }

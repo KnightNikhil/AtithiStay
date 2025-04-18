@@ -20,5 +20,4 @@ public class BookingDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private BookingStatus bookingStatus;
-    private Set<GuestDto> guests;
 }

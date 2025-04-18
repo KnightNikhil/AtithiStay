@@ -1,17 +1,15 @@
 package com.nikhil.springboot.AtithiStay.service;
 
 import com.nikhil.springboot.AtithiStay.dto.HotelDto;
-import com.nikhil.springboot.AtithiStay.dto.HotelInfoDto;
-import com.nikhil.springboot.AtithiStay.dto.RoomDto;
 import com.nikhil.springboot.AtithiStay.entity.Hotel;
 import com.nikhil.springboot.AtithiStay.entity.Room;
 import com.nikhil.springboot.AtithiStay.exceptions.ResourceNotFoundException;
 import com.nikhil.springboot.AtithiStay.repository.HotelRepository;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -101,9 +99,9 @@ public class HotelServiceImpl implements HotelService{
     }
 
     @Override
-    public HotelInfoDto getHotelInfoById(Long hotelId) {
+    public HotelDto getHotelInfoById(Long hotelId) {
         Hotel hotel= hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+hotelId)) ;
-        return new HotelInfoDto(modelMapper.map(hotel, HotelDto.class),hotel.getRooms().stream().map(room -> modelMapper.map(room, RoomDto.class)).toList());
+        return modelMapper.map(hotel, HotelDto.class);
     }
 }

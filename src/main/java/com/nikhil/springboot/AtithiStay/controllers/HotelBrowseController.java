@@ -6,6 +6,7 @@ import com.nikhil.springboot.AtithiStay.dto.HotelSearchRequest;
 import com.nikhil.springboot.AtithiStay.service.HotelService;
 import com.nikhil.springboot.AtithiStay.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +25,13 @@ public class HotelBrowseController {
 
     // TODO add paginantion
     @PostMapping(path = "/searchHotels")
-    public ResponseEntity<List<HotelDto>> searchHotels(@RequestBody HotelSearchRequest hotelSearchRequest){
-        List<HotelDto> hotelDtos = inventoryService.searchHotels(hotelSearchRequest);
+    public ResponseEntity<Page<HotelDto>> searchHotels(@RequestBody HotelSearchRequest hotelSearchRequest){
+        Page<HotelDto> hotelDtos = inventoryService.searchHotels(hotelSearchRequest);
         return new ResponseEntity<>(hotelDtos, HttpStatus.OK);
     }
 
     @GetMapping("/{hotelId}/info")
-    public ResponseEntity<HotelInfoDto> getHotelInfo(@PathVariable Long hotelId) {
+    public ResponseEntity<HotelDto> getHotelInfo(@PathVariable Long hotelId) {
         return ResponseEntity.ok(hotelService.getHotelInfoById(hotelId));
     }
 }

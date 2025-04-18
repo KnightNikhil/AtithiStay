@@ -8,6 +8,10 @@ import com.nikhil.springboot.AtithiStay.entity.Room;
 import com.nikhil.springboot.AtithiStay.repository.InventoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -54,16 +58,24 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public List<HotelDto> searchHotels(HotelSearchRequest hotelSearchRequest) {
+    public Page<HotelDto> searchHotels(HotelSearchRequest hotelSearchRequest) {
         long dateCount =
                 ChronoUnit.DAYS.between(hotelSearchRequest.getStartDate(), hotelSearchRequest.getEndDate()) + 1;
         List<Hotel> hotels= inventoryRepository.findHotelsWithAvailableInventory(
                 hotelSearchRequest.getCity(), hotelSearchRequest.getStartDate(), hotelSearchRequest.getEndDate(), hotelSearchRequest.getRoomsCount(), dateCount
         );
-        List<HotelDto> hotelDtos = hotels.stream().map(hotel ->
-            modelMapper.map(hotel, HotelDto.class))
+
+        Pageable pageable = PageRequest.of(hotelSearchRequest.getPage(), hotelSearchRequest.getSize());
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), hotels.size());
+        List<Hotel> pagedHotels = hotels.subList(start, end);
+
+        List<HotelDto> hotelDtos = pagedHotels.stream()
+                .map(hotel -> modelMapper.map(hotel, HotelDto.class))
                 .toList();
-        return hotelDtos;
+
+        return new PageImpl<>(hotelDtos, pageable, hotels.size());
     }
 
 

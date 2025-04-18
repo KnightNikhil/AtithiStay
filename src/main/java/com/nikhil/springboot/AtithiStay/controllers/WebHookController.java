@@ -23,6 +23,10 @@ public class WebHookController {
     @Value("${stripe.webhook.secret}")
     private String endpointSecret;
 
+    // TODO::
+    // when the payment is done on stripe page, it sends te response through the webhook,
+    // here I used the url /webhook/payment on the cli so the controller is called afterwards
+
     @PostMapping("/payment")
     @Operation(summary = "Capture the payments", tags = {"Webhook"})
     public ResponseEntity<String> capturePayments(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {

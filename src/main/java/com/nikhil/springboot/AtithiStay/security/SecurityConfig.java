@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,15 +27,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request -> {
                             request
-                                    .requestMatchers("/admin/**").hasRole("ADMIN")
-                                    .requestMatchers("/hotels/**", "/booking/**").authenticated()
+//                                    .requestMatchers("/admin/**").hasRole("ADMIN")
+                                    .requestMatchers("/admin/**", "/hotels/**", "/booking/**").authenticated()
                                     .anyRequest().permitAll();
 
                         })
 //                .httpBasic(Customizer.withDefaults())
+                // TODO::
+                // this is for postman but not needed to us as we are using customised jwt
+                // The client sends a username and password with every request.
+                // These credentials are sent in the Authorization header in Base64-encoded format:
+//                .formLogin(Customizer.withDefaults())
+                // this is for web browser
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .csrf(AbstractHttpConfigurer :: disable); // csrf(csrfConfig -> csrfConfig.disable()) both are same, first one is method reference
-
+                // jwtAuthFilter customised by us, should be executed before UsernamePasswordAuthenticationFilter
+                .csrf(AbstractHttpConfigurer :: disable);
+                // csrf(csrfConfig -> csrfConfig.disable()) both are same, first one is method reference
 
         return httpSecurity.build();
     }

@@ -20,6 +20,8 @@ public class Room {
     @ManyToOne
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
+    // hotelIdId can be same for more than one room in Room table
+    // for multiple roomIds there could be same hotelId
 
     @Column(nullable = false)
     private String type;
