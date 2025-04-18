@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -36,11 +37,13 @@ public class AuthService {
     @Autowired
     JWTService jwtService;
 
+
+    @Transactional
     public UserDto signUp(SignUpRequestDto signUpRequestDto) {
 
+
         if(userRepository.existsByEmail(signUpRequestDto.getEmail())){
-            new IllegalArgumentException("Email already exists");
-            return null;
+            throw new IllegalArgumentException("Email already exists");
         }
         User user = modelMapper.map(signUpRequestDto, User.class);
         user.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
@@ -48,6 +51,7 @@ public class AuthService {
         return modelMapper.map(userRepository.save(user), UserDto.class);
 
     }
+
 
     public String login(LoginRequestDto loginRequestDto) {
 
@@ -77,7 +81,7 @@ public class AuthService {
 
         // Once logged in, we can now use this user as it is stored in SecurityContextHolder
         //  (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = (User)  authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
         String token = jwtService.generateJWTToken(user);
 

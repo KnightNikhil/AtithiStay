@@ -27,7 +27,7 @@ public class HotelBrowseController {
     @PostMapping(path = "/searchHotels")
     public ResponseEntity<Page<HotelDto>> searchHotels(@RequestBody HotelSearchRequest hotelSearchRequest){
         Page<HotelDto> hotelDtos = inventoryService.searchHotels(hotelSearchRequest);
-        return new ResponseEntity<>(hotelDtos, HttpStatus.OK);
+        return ResponseEntity.ok(hotelDtos);
     }
 
     @GetMapping("/{hotelId}/info")

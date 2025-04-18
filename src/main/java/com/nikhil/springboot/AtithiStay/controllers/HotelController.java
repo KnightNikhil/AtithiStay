@@ -41,13 +41,13 @@ public class HotelController {
     @GetMapping(path = "/activateHotelById/{id}")
     public ResponseEntity<HotelDto> activateHotelById(@PathVariable Long id){
         HotelDto hotel = hotelService.activateHotelById(id);
-        return new ResponseEntity<>(hotel, HttpStatus.OK);
+        return ResponseEntity.ok(hotel);
     }
 
     @GetMapping(path = "/deActivateHotelById/{id}")
     public ResponseEntity<HotelDto> deActivateHotelById(@PathVariable Long id){
         HotelDto hotel = hotelService.deActivateHotelById(id);
-        return new ResponseEntity<>(hotel, HttpStatus.OK);
+        return ResponseEntity.ok(hotel);
     }
 
 }

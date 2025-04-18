@@ -33,7 +33,7 @@ public class WebHookController {
         try {
             Event event = Webhook.constructEvent(payload, sigHeader, endpointSecret);
             bookingService.capturePayment(event);
-            return new ResponseEntity<>("Webhook received ", HttpStatus.OK);
+            return ResponseEntity.ok("Webhook received ");
         } catch (SignatureVerificationException e) {
             throw new RuntimeException(e);
         }

@@ -5,11 +5,15 @@ import com.nikhil.springboot.AtithiStay.dto.BookingRequest;
 import com.nikhil.springboot.AtithiStay.entity.*;
 import com.nikhil.springboot.AtithiStay.entity.enums.BookingStatus;
 import com.nikhil.springboot.AtithiStay.exceptions.ResourceNotFoundException;
+import com.nikhil.springboot.AtithiStay.exceptions.UnAuthorisedException;
 import com.nikhil.springboot.AtithiStay.repository.*;
+import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
+import com.stripe.model.Refund;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.ApiResource;
+import com.stripe.param.RefundCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -69,13 +74,13 @@ public class BookingServiceImpl implements BookingService {
                     inventory.setReservedCount(inventory.getReservedCount() + bookingRequest.getRoomsCount());
                 }
                 else{
-                    return cancelBooking(bookingRequest);
+                    throw new IllegalStateException("Room is not available anymore");
                 }
             }
             inventoryRepository.saveAll(inventories);
         }
         else{
-            return cancelBooking(bookingRequest);
+            throw new IllegalStateException("Room is not available anymore");
         }
 
 
@@ -101,9 +106,11 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new ResourceNotFoundException("Booking not found with id: "+bookingId));
 
-        String checkoutSessionUrl = checkoutService.getCheckoutSession(user, booking, "http://localhost:8080/success", "http://localhost:8080/failure");
+        if(user!=booking.getUser()){
+            throw new UnAuthorisedException("Booking does not belong to this user with id: "+user.getId());
+        }
 
-        return  checkoutSessionUrl;
+        return checkoutService.getCheckoutSession(user, booking, "http://localhost:8080/success", "http://localhost:8080/failure");
     }
 
     @Override
@@ -142,12 +149,59 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private BookingDto cancelBooking(BookingRequest bookingRequest){
-        BookingDto bookingDto = modelMapper.map(bookingRequest, BookingDto.class);
-        bookingDto.setBookingStatus(BookingStatus.CANCELLED);
-        return bookingDto;
+    @Override
+    @Transactional
+    public void cancelBooking(Long bookingId) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Booking booking =
+                bookingRepository.findById(bookingId).orElseThrow(() ->
+                        new ResourceNotFoundException("Booking not found for ID: " + bookingId));
+
+        if (user != booking.getUser())
+            throw new UnAuthorisedException("Booking does not belong to this user with id: " + user.getId());
+
+        if (!booking.getCheckInDate().isAfter(LocalDate.now().minusDays(1)))
+            throw new RuntimeException("You can not cancel the booking now, as the booking has begun");
+
+        if (!booking.getBookingStatus().equals(BookingStatus.CONFIRMED))
+            throw new RuntimeException("The booking is not in confirmed state");
+
+        // Refund through stripe
+        try {
+            Session session = Session.retrieve(booking.getPaymentSessionId());
+            RefundCreateParams refundCreateParams = RefundCreateParams.builder()
+                    .setPaymentIntent(session.getPaymentIntent())
+                    .build();
+            Refund.create(refundCreateParams);
+        } catch (StripeException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        //Updating Dbs
+
+        List<Inventory> inventories = inventoryRepository.findAllByRoomIdAndDateBetweenAndClosed(booking.getRoom().getId(), booking.getCheckInDate(), booking.getCheckOutDate(), false);
+        inventories.forEach(inventory -> {
+            int updatedCount = inventory.getBookedCount() - booking.getRoomsCount();
+            if (updatedCount >= 0) {
+                inventory.setBookedCount(updatedCount);
+            } else {
+                throw new IllegalArgumentException(
+                        "Invalid parameters: bookedRooms in inventory are less than for bookingId: " + booking.getId()
+                );
+            }
+        });
+
+        inventoryRepository.saveAll(inventories);
+
+        booking.setBookingStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+
     }
 
-
-
 }
+
+
+
+

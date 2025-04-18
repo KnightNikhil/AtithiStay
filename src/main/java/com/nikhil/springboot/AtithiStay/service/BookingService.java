@@ -10,4 +10,6 @@ public interface BookingService {
     String initialisePayment(Long bookingId);
 
     void capturePayment(Event event);
+
+    void cancelBooking(Long bookingId);
 }

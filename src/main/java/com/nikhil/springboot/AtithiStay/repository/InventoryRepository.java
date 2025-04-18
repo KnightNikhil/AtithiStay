@@ -34,7 +34,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
                                                  @Param("dateCount") Long dateCount);
 
 
-    List<Inventory> findAllByRoomIdAndDateBetweenAndClosed(Long roomId, LocalDate checkInDate, LocalDate checkOutDate, boolean b);
+    List<Inventory> findAllByRoomIdAndDateBetweenAndClosed(Long roomId, LocalDate checkInDate, LocalDate checkOutDate, boolean closed);
 
     @Query("""
                 SELECT i
@@ -51,13 +51,13 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
                                                  @Param("numberOfRooms") int numberOfRooms);
 
     @Modifying
+    // Modifying is used when you want to uupdate in a query bcoz by default hibernate considers it as select query
     @Query("""
                 UPDATE Inventory i
                 SET i.reservedCount = i.reservedCount - :numberOfRooms,
                     i.bookedCount = i.bookedCount + :numberOfRooms
                 WHERE i.room.id = :roomId
                   AND i.date BETWEEN :startDate AND :endDate
-                  AND (i.totalCount - i.bookedCount) >= :numberOfRooms
                   AND i.reservedCount >= :numberOfRooms
                   AND i.closed = false
             """)

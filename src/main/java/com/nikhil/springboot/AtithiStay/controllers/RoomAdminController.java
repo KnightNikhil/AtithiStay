@@ -22,13 +22,13 @@ public class RoomAdminController {
     @PostMapping(path = "/createRoom")
     public ResponseEntity<RoomDto> createHotel(@RequestBody RoomDto roomDto, @PathVariable Long hotelId){
         RoomDto room = roomService.createNewRoom(roomDto, hotelId);
-        return new ResponseEntity<>(room, HttpStatus.OK);
+        return ResponseEntity.ok(room);
     }
 
     @GetMapping(path = "/getRoomById/{id}")
     public ResponseEntity<RoomDto> getHotel(@PathVariable Long id){
         RoomDto room = roomService.getRoomById(id);
-        return new ResponseEntity<>(room, HttpStatus.OK);
+        return ResponseEntity.ok(room);
     }
 
 
