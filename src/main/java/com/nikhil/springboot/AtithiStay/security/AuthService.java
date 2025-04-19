@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,15 +37,14 @@ public class AuthService {
 
 
     @Transactional
-    public UserDto signUp(SignUpRequestDto signUpRequestDto) {
-
+    public UserDto signUp(SignUpRequestDto signUpRequestDto, Set<Role> role) {
 
         if(userRepository.existsByEmail(signUpRequestDto.getEmail())){
             throw new IllegalArgumentException("Email already exists");
         }
         User user = modelMapper.map(signUpRequestDto, User.class);
         user.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
-        user.setRoles(Set.of(Role.GUEST));
+        user.setRoles(role);
         return modelMapper.map(userRepository.save(user), UserDto.class);
 
     }
