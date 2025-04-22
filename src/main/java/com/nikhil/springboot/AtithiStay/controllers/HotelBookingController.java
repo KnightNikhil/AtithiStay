@@ -1,5 +1,6 @@
 package com.nikhil.springboot.AtithiStay.controllers;
 
+import com.nikhil.springboot.AtithiStay.advice.ApiResponse;
 import com.nikhil.springboot.AtithiStay.dto.BookingDto;
 import com.nikhil.springboot.AtithiStay.dto.BookingRequest;
 import com.nikhil.springboot.AtithiStay.service.BookingService;
@@ -22,9 +23,9 @@ public class HotelBookingController {
     }
 
     @GetMapping("/initPayment/{bookingId}")
-    public ResponseEntity<String> initialiseBooking(@PathVariable Long bookingId){
+    public ResponseEntity<ApiResponse<String>> initialiseBooking(@PathVariable Long bookingId){
         String paymentSessionId = bookingService.initialisePayment(bookingId);
-        return ResponseEntity.ok(paymentSessionId);
+        return ResponseEntity.ok(new ApiResponse<>(paymentSessionId));
     }
 
     @GetMapping("/cancel/{bookingId}")

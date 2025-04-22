@@ -76,7 +76,7 @@ public class AuthService {
                 loginRequestDto.getEmail(), loginRequestDto.getPassword()
         ));
 
-        // Once logged in, we can now use this user as it is stored in SecurityContextHolder
+        // Once logged in, we can now use this user as it is stored in SecurityContextHolderlog
         //  (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = (User) authentication.getPrincipal();
 

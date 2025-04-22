@@ -106,7 +106,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new ResourceNotFoundException("Booking not found with id: "+bookingId));
 
-        if(user!=booking.getUser()){
+        if(!(user.getId().equals(booking.getUser().getId()))){
             throw new UnAuthorisedException("Booking does not belong to this user with id: "+user.getId());
         }
 
