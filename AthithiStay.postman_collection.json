@@ -1,0 +1,573 @@
+{
+	"info": {
+		"_postman_id": "28c25574-9660-43d2-83f7-a12f3a3bd5c2",
+		"name": "AthithiStay",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33119255"
+	},
+	"item": [
+		{
+			"name": "getHotelById",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "pass",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/admin/hotel/getHotelById/3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"hotel",
+						"getHotelById",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createHotel",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/hotel/createHotel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"hotel",
+						"createHotel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateHotelById",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"two\",\n    \"city\" : \"Ctwo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/hotel/updateHotelById/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"hotel",
+						"updateHotelById",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteHotelById",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"two\",\n    \"city\" : \"Ctwo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/hotel/deleteHotelById/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"hotel",
+						"deleteHotelById",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "activateHotelById",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"two\",\n    \"city\" : \"Ctwo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/hotel/activateHotelById/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"hotel",
+						"activateHotelById",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deActivateHotelById",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"two\",\n    \"city\" : \"Ctwo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/hotel/deActivateHotelById/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"hotel",
+						"deActivateHotelById",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllRoomsInHotel",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/admin/hotels/4/room/getAllRoomsInHotel",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"hotels",
+						"4",
+						"room",
+						"getAllRoomsInHotel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRoomById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/admin/hotels/4/room/getRoomById/8",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"hotels",
+						"4",
+						"room",
+						"getRoomById",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteRoomById",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/admin/hotels/7/room/deleteRoomById/12",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"hotels",
+						"7",
+						"room",
+						"deleteRoomById",
+						"12"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createRoom",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"basePrice\" : \"5\",\n    \"type\" : \"DELUXE\",\n    \"totalCount\": 1,\n    \"capacity\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/admin/hotels/7/room/createRoom",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"admin",
+						"hotels",
+						"7",
+						"room",
+						"createRoom"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "browseHotels",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "pass",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"city\" : \"Ctwo\",\n    \"startDate\" : \"2025-04-15\",\n    \"endDate\": \"2025-04-17\",\n    \"roomsCount\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/hotels/searchHotels",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hotels",
+						"searchHotels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "browseHotelsinfo",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"basePrice\" : \"5\",\n    \"type\" : \"DELUXE\",\n    \"totalCount\": 1,\n    \"capacity\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/hotels/3/info",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"hotels",
+						"3",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "startBooking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwiZW1haWwiOiJlNkBnLmMiLCJyb2xlcyI6IltHVUVTVF0iLCJpYXQiOjE3NDQ2NjgxODUsImV4cCI6MTc0NDY2ODI0NX0.FLTlSJgkkYN3O5GkJU-EtZqguX9gFV6S9XI57c8vu_A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hotelId\" : 8,\n    \"roomId\" : 18,\n    \"roomsCount\": 2,\n    \"checkInDate\": \"2025-04-15\",\n    \"checkOutDate\" : \"2025-04-16\",\n    \"guests\" : 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/booking/startBooking",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"booking",
+						"startBooking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "initPayment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"bookingId\" : \"15\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/booking/initPayment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"booking",
+						"initPayment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userSignUp",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"N6\",\n    \"email\" : \"e6@g.c\",\n    \"password\" : \"nik@123\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/userSignUp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"userSignUp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "userLogin",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "user",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "pass",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"e3@g.c\",\n    \"password\" : \"nik@123\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/userLogin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"userLogin"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "jwt",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2IiwiZW1haWwiOiJlNkBnLmMiLCJyb2xlcyI6IltHVUVTVF0iLCJpYXQiOjE3NDQ5MTE0NDIsImV4cCI6MTc0NDkxNTA0Mn0.SlsrFBzHpqMJhKYggHki5RkSjGEk9iQFI2UiELqZkKY",
+			"type": "string"
+		}
+	]
+}
